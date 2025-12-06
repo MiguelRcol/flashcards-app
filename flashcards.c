@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
+
 #define MAX_CARDS 100
 
 typedef struct {
@@ -17,6 +20,8 @@ void save_cards(const Flashcard cards[], int count);
 
 int main(void) {
     printf("Flashcards language app!\n");
+
+     srand((unsigned int) time(NULL));  // seed for rand()
 
     Flashcard cards[MAX_CARDS];
     int card_count = 0;
@@ -109,23 +114,27 @@ void quiz_mode(const Flashcard cards[], int count) {
         return;
     }
 
-    int score = 0;
+    int score = 0; // optional, you can remove if not used
     char answer[64];
 
-    for (int i = 0; i < count; i++) {
-        printf("Translate '%s' (%s): ", cards[i].word, cards[i].language);
-        scanf("%63s", answer);
+    // Pick a random index
+    int index = rand() % count;
 
-        if (strcmp(answer, cards[i].translation) == 0) {
-            printf("Correct!\n");
-            score++;
-        } else {
-            printf("Wrong! The correct translation is '%s'.\n", cards[i].translation);
-        }
+    printf("Translate '%s' (%s): ",
+           cards[index].word,
+           cards[index].language);
+
+    scanf("%63s", answer);
+
+    if (strcmp(answer, cards[index].translation) == 0) {
+        printf("Correct!\n");
+        score++;
+    } else {
+        printf("Wrong! The correct translation is '%s'.\n",
+               cards[index].translation);
     }
-
-    printf("Quiz finished! Your score: %d/%d\n", score, count);
 }
+
 void save_cards(const Flashcard cards[], int count) {
     FILE *file = fopen("flashcards.dat", "wb");
     if (file == NULL) {
