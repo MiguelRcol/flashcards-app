@@ -10,6 +10,7 @@ typedef struct {
 
 void show_menu(void);
 void add_card(Flashcard cards[], int *count);
+void list_cards(const Flashcard cards[], int count);
 
 int main(void) {
     printf("Flashcards language app!\n");
@@ -31,7 +32,7 @@ int main(void) {
                 add_card(cards, &card_count);
                 break;
             case 2:
-                printf("List flashcards selected.\n");
+                list_cards(cards, card_count);
                 break;
             case 3:
                 printf("Quiz mode selected.\n");
@@ -82,4 +83,15 @@ void add_card(Flashcard cards[], int *count) {
     (*count)++;
 
     printf("Flashcard added!\n");
+}
+void list_cards(const Flashcard cards[], int count) {
+    if (count == 0) {
+        printf("No flashcards available.\n");
+        return;
+    }
+
+    printf("\n=== Flashcards List ===\n");
+    for (int i = 0; i < count; i++) {
+        printf("%d. [%s] %s - %s\n", i + 1, cards[i].language, cards[i].word, cards[i].translation);
+    }
 }
