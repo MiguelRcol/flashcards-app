@@ -12,6 +12,8 @@ void show_menu(void);
 void add_card(Flashcard cards[], int *count);
 void list_cards(const Flashcard cards[], int count);
 void quiz_mode(const Flashcard cards[], int count);
+int load_cards(Flashcard cards[]);
+void save_cards(const Flashcard cards[], int count);
 
 int main(void) {
     printf("Flashcards language app!\n");
@@ -19,6 +21,9 @@ int main(void) {
     Flashcard cards[MAX_CARDS];
     int card_count = 0;
     int option = 0;
+
+    card_count = load_cards(cards);
+    printf("Loaded %d flashcards from file.\n", card_count);
 
     do
     {
@@ -39,8 +44,10 @@ int main(void) {
                 quiz_mode(cards, card_count);
                 break;
             case 4:
+                save_cards(cards, card_count);
                 printf("Saving and exiting...\n");
                 break;
+
             case 0:
                 printf("Exiting without saving...\n");
                 break;
@@ -118,4 +125,45 @@ void quiz_mode(const Flashcard cards[], int count) {
     }
 
     printf("Quiz finished! Your score: %d/%d\n", score, count);
+}
+void save_cards(const Flashcard cards[], int count) {
+    FILE *file = fopen("flashcards.dat", "wb");
+    if (file == NULL) {
+        printf("Error saving flashcards!\n");
+        return;
+    }
+
+    fwrite(&count, sizeof(int), 1, file);
+    fwrite(cards, sizeof(Flashcard), count, file);
+
+    fclose(file);
+    printf("Flashcards saved successfully.\n");
+}
+int load_cards(Flashcard cards[]) {
+    FILE *file = fopen("flashcards.dat", "rb");
+    if (file == NULL) {
+        return 0; // No file found, start with zero cards
+    }
+
+    int count = 0;
+
+    // Read count
+    if (fread(&count, sizeof(int), 1, file) != 1) {
+        fclose(file);
+        return 0;
+    }
+
+    // Clamp to MAX_CARDS to avoid overflow
+    if (count < 0) {
+        fclose(file);
+        return 0;
+    }
+    if (count > MAX_CARDS) {
+        count = MAX_CARDS;
+    }
+
+    size_t read = fread(cards, sizeof(Flashcard), count, file);
+    fclose(file);
+
+    return (int)read; // in case fewer were read
 }
