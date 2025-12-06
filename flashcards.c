@@ -21,7 +21,8 @@ void save_cards(const Flashcard cards[], int count);
 int main(void) {
     printf("Flashcards language app!\n");
 
-     srand((unsigned int) time(NULL));  // seed for rand()
+    // Seed the random number generator once
+    srand((unsigned int) time(NULL));
 
     Flashcard cards[MAX_CARDS];
     int card_count = 0;
@@ -30,15 +31,20 @@ int main(void) {
     card_count = load_cards(cards);
     printf("Loaded %d flashcards from file.\n", card_count);
 
-    do
-    {
+    do {
         show_menu();
 
         printf("Select an option: ");
-        scanf("%d", &option);
+        if (scanf("%d", &option) != 1) {
+            // Clear invalid input
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF);
+            printf("Invalid input. Please enter a number.\n");
+            option = -1;
+            continue;
+        }
 
-        switch (option)
-        {
+        switch (option) {
             case 1:
                 add_card(cards, &card_count);
                 break;
@@ -52,7 +58,6 @@ int main(void) {
                 save_cards(cards, card_count);
                 printf("Saving and exiting...\n");
                 break;
-
             case 0:
                 printf("Exiting without saving...\n");
                 break;
@@ -97,6 +102,7 @@ void add_card(Flashcard cards[], int *count) {
 
     printf("Flashcard added!\n");
 }
+
 void list_cards(const Flashcard cards[], int count) {
     if (count == 0) {
         printf("No flashcards available.\n");
@@ -105,16 +111,20 @@ void list_cards(const Flashcard cards[], int count) {
 
     printf("\n=== Flashcards List ===\n");
     for (int i = 0; i < count; i++) {
-        printf("%d. [%s] %s - %s\n", i + 1, cards[i].language, cards[i].word, cards[i].translation);
+        printf("%d. [%s] %s - %s\n",
+               i + 1,
+               cards[i].language,
+               cards[i].word,
+               cards[i].translation);
     }
 }
+
 void quiz_mode(const Flashcard cards[], int count) {
     if (count == 0) {
         printf("No flashcards available for quiz.\n");
         return;
     }
 
-    int score = 0; // optional, you can remove if not used
     char answer[64];
 
     // Pick a random index
@@ -128,7 +138,6 @@ void quiz_mode(const Flashcard cards[], int count) {
 
     if (strcmp(answer, cards[index].translation) == 0) {
         printf("Correct!\n");
-        score++;
     } else {
         printf("Wrong! The correct translation is '%s'.\n",
                cards[index].translation);
@@ -142,12 +151,24 @@ void save_cards(const Flashcard cards[], int count) {
         return;
     }
 
-    fwrite(&count, sizeof(int), 1, file);
-    fwrite(cards, sizeof(Flashcard), count, file);
+    // First write how many cards we have
+    if (fwrite(&count, sizeof(int), 1, file) != 1) {
+        printf("Error writing card count to file.\n");
+        fclose(file);
+        return;
+    }
+
+    // Then write the array of flashcards
+    if (fwrite(cards, sizeof(Flashcard), count, file) != (size_t)count) {
+        printf("Error writing flashcards to file.\n");
+        fclose(file);
+        return;
+    }
 
     fclose(file);
     printf("Flashcards saved successfully.\n");
 }
+
 int load_cards(Flashcard cards[]) {
     FILE *file = fopen("flashcards.dat", "rb");
     if (file == NULL) {
