@@ -1,42 +1,45 @@
 #include <stdio.h>
 
 int main(void) {
-    
-    printf("FLashcards language app!\n");
-    
+    printf("Flashcards language app!\n");
+
     int option = 0;
-    
+
     do
     {
-        //1. print menu
-        printf("1. Add flashcard\n");
-        printf("2. Review flashcards\n");
-        printf("3. Delete flashcard\n");
-        printf("4. Exit\n");
-        //2 ask for option
+        printf("\n=== FLASHCARDS APP ===\n");
+        printf("1. Add new flashcard\n");
+        printf("2. List flashcards\n");
+        printf("3. Quiz mode\n");
+        printf("4. Save & Exit\n");
+        printf("0. Exit without saving\n");
+
         printf("Select an option: ");
         scanf("%d", &option);
-        //4. switch case for options
+
         switch (option)
         {
-        case 1:
-            printf("Add flashcard selected.\n");
-            break;
-        case 2:
-            printf("Review flashcards selected.\n");
-            break;
-        case 3:
-            printf("Delete flashcard selected.\n");
-            break;
-        case 4:
-            printf("Exiting the program.\n");
-            break;
-        default:
-            printf("Invalid option. Please try again.\n");
-            break;
+            case 1:
+                printf("Add new flashcard selected.\n");
+                break;
+            case 2:
+                printf("List flashcards selected.\n");
+                break;
+            case 3:
+                printf("Quiz mode selected.\n");
+                break;
+            case 4:
+                printf("Saving and exiting...\n");
+                break;
+            case 0:
+                printf("Exiting without saving...\n");
+                break;
+            default:
+                printf("Invalid option. Try again.\n");
+                break;
         }
-    } while (option != 4);
-    
+
+    } while (option != 0 && option != 4);
+
     return 0;
 }
-    
