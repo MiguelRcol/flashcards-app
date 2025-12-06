@@ -11,6 +11,7 @@ typedef struct {
 void show_menu(void);
 void add_card(Flashcard cards[], int *count);
 void list_cards(const Flashcard cards[], int count);
+void quiz_mode(const Flashcard cards[], int count);
 
 int main(void) {
     printf("Flashcards language app!\n");
@@ -35,7 +36,7 @@ int main(void) {
                 list_cards(cards, card_count);
                 break;
             case 3:
-                printf("Quiz mode selected.\n");
+                quiz_mode(cards, card_count);
                 break;
             case 4:
                 printf("Saving and exiting...\n");
@@ -94,4 +95,27 @@ void list_cards(const Flashcard cards[], int count) {
     for (int i = 0; i < count; i++) {
         printf("%d. [%s] %s - %s\n", i + 1, cards[i].language, cards[i].word, cards[i].translation);
     }
+}
+void quiz_mode(const Flashcard cards[], int count) {
+    if (count == 0) {
+        printf("No flashcards available for quiz.\n");
+        return;
+    }
+
+    int score = 0;
+    char answer[64];
+
+    for (int i = 0; i < count; i++) {
+        printf("Translate '%s' (%s): ", cards[i].word, cards[i].language);
+        scanf("%63s", answer);
+
+        if (strcmp(answer, cards[i].translation) == 0) {
+            printf("Correct!\n");
+            score++;
+        } else {
+            printf("Wrong! The correct translation is '%s'.\n", cards[i].translation);
+        }
+    }
+
+    printf("Quiz finished! Your score: %d/%d\n", score, count);
 }
