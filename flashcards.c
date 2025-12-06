@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+void show_menu(void);
+
 int main(void) {
     printf("Flashcards language app!\n");
 
@@ -7,12 +9,7 @@ int main(void) {
 
     do
     {
-        printf("\n=== FLASHCARDS APP ===\n");
-        printf("1. Add new flashcard\n");
-        printf("2. List flashcards\n");
-        printf("3. Quiz mode\n");
-        printf("4. Save & Exit\n");
-        printf("0. Exit without saving\n");
+        show_menu();
 
         printf("Select an option: ");
         scanf("%d", &option);
@@ -42,4 +39,12 @@ int main(void) {
     } while (option != 0 && option != 4);
 
     return 0;
+}
+void show_menu() {
+    printf("\n=== FLASHCARDS APP ===\n");
+    printf("1. Add new flashcard\n");
+    printf("2. List flashcards\n");
+    printf("3. Quiz mode\n");
+    printf("4. Save & Exit\n");
+    printf("0. Exit without saving\n");
 }
