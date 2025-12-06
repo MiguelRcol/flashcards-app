@@ -1,7 +1,8 @@
 #include <stdio.h>
+
 #define MAX_CARDS 100
 
-typedef struct{
+typedef struct {
     char word[64];
     char translation[64];
     char language[16];
@@ -12,7 +13,8 @@ void add_card(Flashcard cards[], int *count);
 
 int main(void) {
     printf("Flashcards language app!\n");
-        Flashcard cards[MAX_CARDS];
+
+    Flashcard cards[MAX_CARDS];
     int card_count = 0;
     int option = 0;
 
@@ -49,7 +51,8 @@ int main(void) {
 
     return 0;
 }
-void show_menu() {
+
+void show_menu(void) {
     printf("\n=== FLASHCARDS APP ===\n");
     printf("1. Add new flashcard\n");
     printf("2. List flashcards\n");
@@ -57,6 +60,7 @@ void show_menu() {
     printf("4. Save & Exit\n");
     printf("0. Exit without saving\n");
 }
+
 void add_card(Flashcard cards[], int *count) {
     if (*count >= MAX_CARDS) {
         printf("Flashcard limit reached!\n");
@@ -66,11 +70,13 @@ void add_card(Flashcard cards[], int *count) {
     Flashcard new_card;
 
     printf("Enter word: ");
-    scanf("%s", new_card.word);
+    scanf("%63s", new_card.word);
+
     printf("Enter translation: ");
-    scanf("%s", new_card.translation);
-    printf("Enter language: ");
-    scanf("%s", new_card.language);
+    scanf("%63s", new_card.translation);
+
+    printf("Enter language (EN/PT/ES): ");
+    scanf("%15s", new_card.language);
 
     cards[*count] = new_card;
     (*count)++;
